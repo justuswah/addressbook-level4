@@ -157,11 +157,11 @@ The UI consists of a `MainWindow` that is made up of parts e.g.`CommandBox`, `Re
 
 The `UI` component uses JavaFx UI framework. The layout of these UI parts are defined in matching `.fxml` files that are in the `src/main/resources/view` folder. For example, the layout of the link:{repoURL}/src/main/java/seedu/address/ui/MainWindow.java[`MainWindow`] is specified in link:{repoURL}/src/main/resources/view/MainWindow.fxml[`MainWindow.fxml`]
 
-The `UI` component,
+The `UI` component can do the following:
 
-* Executes user commands using the `Logic` component.
-* Binds itself to some data in the `Model` so that the UI can auto-update when data in the `Model` change.
-* Responds to events raised from various parts of the App and updates the UI accordingly.
+* Execute user commands using the `Logic` component.
+* Bind itself to some data in the `Model` so that the UI can auto-update when data in the `Model` change.
+* Respond to events raised from various parts of the App and updates the UI accordingly.
 
 === Logic component
 
@@ -174,9 +174,11 @@ _Figure 2.3.2 : Structure of Commands in the Logic Component. This diagram shows
 *API* :
 link:{repoURL}/src/main/java/seedu/address/logic/Logic.java[`Logic.java`]
 
+The following sequence of events occur when the user inputs a command.
+
 .  `Logic` uses the `AddressBookParser` class to parse the user command.
 .  This results in a `Command` object which is executed by the `LogicManager`.
-.  The command execution can affect the `Model` (e.g. adding a person) and/or raise events.
+.  The command execution may affect the `Model` (e.g. adding a person) and/or raise events (eg. listing all contacts).
 .  The result of the command execution is encapsulated as a `CommandResult` object which is passed back to the `Ui`.
 
 Given below is the Sequence Diagram for interactions within the `Logic` component for the `execute("delete 1")` API call.
@@ -191,12 +193,13 @@ _Figure 2.4.1 : Structure of the Model Component_
 
 *API* : link:{repoURL}/src/main/java/seedu/address/model/Model.java[`Model.java`]
 
-The `Model`,
+The `Model` component can do the following:
 
-* stores a `UserPref` object that represents the user's preferences.
-* stores the Address Book data.
-* exposes an unmodifiable `ObservableList<ReadOnlyPerson>` that can be 'observed' e.g. the UI can be bound to this list so that the UI automatically updates when the data in the list change.
-* does not depend on any of the other three components.
+* store a `UserPref` object that represents the user's preferences.
+* store the Address Book data.
+* expose an unmodifiable `ObservableList<ReadOnlyPerson>` that can be 'observed' e.g. the UI can be bound to this list so that the UI automatically updates when the data in the list change.
+
+It is important to note that the model component does not depend on any of the other three components.
 
 === Storage component
 
@@ -205,10 +208,10 @@ _Figure 2.5.1 : Structure of the Storage Component_
 
 *API* : link:{repoURL}/src/main/java/seedu/address/storage/Storage.java[`Storage.java`]
 
-The `Storage` component,
+The `Storage` component can do the following:
 
-* can save `UserPref` objects in json format and read it back.
-* can save the Address Book data in xml format and read it back.
+* save `UserPref` objects in json format and read it back.
+* save the Address Book data in xml format and read it back.
 
 === Common classes
 
@@ -221,9 +224,9 @@ This section describes some noteworthy details on how certain features are imple
 // tag::undoredo[]
 === Undo/Redo mechanism
 
-The undo/redo mechanism is facilitated by an `UndoRedoStack`, which resides inside `LogicManager`. It supports undoing and redoing of commands that modifies the state of the address book (e.g. `add`, `edit`). Such commands will inherit from `UndoableCommand`.
+The undo/redo mechanism is facilitated by an `UndoRedoStack`, which resides inside `LogicManager`. It supports undoing and redoing of commands that modifies the state of the address book (e.g. `add`, `edit`). Such commands are inherited from `UndoableCommand`.
 
-`UndoRedoStack` only deals with `UndoableCommands`. Commands that cannot be undone will inherit from `Command` instead. The following diagram shows the inheritance diagram for commands:
+`UndoRedoStack` only deals with instances of `UndoableCommand`. Commands that cannot be undone will inherit from `Command` instead. The following diagram shows the inheritance diagram for commands:
 
 image::LogicCommandClassDiagram.png[width="800"]
 
@@ -239,6 +242,8 @@ public class ListCommand extends Command {
     }
 }
 ----
+
+
 
 With the extra layer, the commands that are undoable are implemented this way:
 [source,java]
@@ -302,6 +307,8 @@ image::UndoRedoNewCommand3StackDiagram.png[width="800"]
 The following activity diagram summarize what happens inside the `UndoRedoStack` when a user executes a new command:
 
 image::UndoRedoActivityDiagram.png[width="200"]
+
+//stopped here
 
 ==== Design Considerations
 
